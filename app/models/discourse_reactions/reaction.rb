@@ -20,6 +20,7 @@ module DiscourseReactions
     def self.valid_reactions
       Set[
         DiscourseReactions::Reaction.main_reaction_id,
+        '-1',
         *SiteSetting.discourse_reactions_enabled_reactions.to_s.split("|")
       ]
     end
