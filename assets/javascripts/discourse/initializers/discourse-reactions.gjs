@@ -194,8 +194,6 @@ function customizePostMenu(api) {
 
 function customizeWidgetPostMenu(api) {
     // if (api.replacePostMenuButton) {
-    //   console.log("replacePostMenuButton");
-
     // api.replacePostMenuButton("like", {
     //   name: "discourse-reactions-actions",
     //   buildAttrs: (widget) => {
@@ -219,7 +217,6 @@ function customizeWidgetPostMenu(api) {
         });
     });
     api.addPostMenuButton('downvote', (post) => {
-        console.log(post);
         if (!post.wiki) {
             return
         }
@@ -244,11 +241,9 @@ function customizeWidgetPostMenu(api) {
     // }
     api.decorateWidget('post-menu:before-extra-controls', helper => {
         let model = helper.getModel();
-        console.log(model.reactions);
         if (!model.wiki){
             return;
         }
-        // console.log(helper.attrs.id);
         let num_upvotes = 0;
         let num_downvotes = 0;
         for (const reaction of model.reactions) {
