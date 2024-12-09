@@ -114,7 +114,9 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   html(attrs) {
-    return;
+    if (attrs.post.wiki){
+      return;
+    }
     if (attrs.post.reaction_users_count) {
       const post = attrs.post;
       const count = post.reaction_users_count;

@@ -218,7 +218,11 @@ function customizeWidgetPostMenu(api) {
             post,
         });
     });
-    api.addPostMenuButton('coffee', () => {
+    api.addPostMenuButton('downvote', (post) => {
+        console.log(post);
+        if (!post.wiki) {
+            return
+        }
         return {
             action: ({ post, showFeedback }) => {
                 ajax(
@@ -233,7 +237,7 @@ function customizeWidgetPostMenu(api) {
 
             },
             icon: 'far-thumbs-down',
-            className: 'hot-coffee',
+            className: 'downvote-button',
             position: 'first',
         }
     });
@@ -241,6 +245,9 @@ function customizeWidgetPostMenu(api) {
     api.decorateWidget('post-menu:before-extra-controls', helper => {
         let model = helper.getModel();
         console.log(model.reactions);
+        if (!model.wiki){
+            return;
+        }
         // console.log(helper.attrs.id);
         let num_upvotes = 0;
         let num_downvotes = 0;
@@ -254,34 +261,38 @@ function customizeWidgetPostMenu(api) {
             }
         }
         let num_up_minus_down = num_upvotes - num_downvotes;
-        return helper.h('span', ` ${num_up_minus_down}`);
+        return helper.h('span.discourse-reactions-counter', `${num_up_minus_down}`);
     });
-    // api.decorateWidget("post-menu:extra-post-controls", (dec) => {
-    //   if (dec.widget.site.mobileView) {
-    //     return;
-    //   }
-    //
-    //   const mainReaction =
-    //     dec.widget.siteSettings.discourse_reactions_reaction_for_like;
-    //   const post = dec.getModel();
-    //
-    //   if (!post || post.deleted_at) {
-    //     return;
-    //   }
-    //
-    //   if (
-    //     post.reactions &&
-    //     post.reactions.length === 1 &&
-    //     post.reactions[0].id === mainReaction
-    //   ) {
-    //     return;
-    //   }
-    //
-    //   return dec.attach("discourse-reactions-actions", {
-    //     post,
-    //     position: "left",
-    //   });
-    // });
+    api.decorateWidget("post-menu:extra-post-controls", (dec) => {
+
+      if (dec.widget.site.mobileView) {
+        return;
+      }
+
+      const mainReaction =
+        dec.widget.siteSettings.discourse_reactions_reaction_for_like;
+      const post = dec.getModel();
+
+      if (!post || post.deleted_at) {
+        return;
+      }
+        if (post.wiki){
+            return;
+        }
+
+      if (
+        post.reactions &&
+        post.reactions.length === 1 &&
+        post.reactions[0].id === mainReaction
+      ) {
+        return;
+      }
+
+      return dec.attach("discourse-reactions-actions", {
+        post,
+        position: "left",
+      });
+    });
 }
 
 export default {
